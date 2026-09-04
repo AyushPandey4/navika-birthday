@@ -15,90 +15,98 @@ const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matc
 
 /* ─────────────────────────────────────────────────────────────
    AUDIO PLAYER
-   Strategy:
-     1. Play immediately — MUTED (all browsers allow muted autoplay)
-     2. On first user gesture → unmute automatically
-     3. After that, button toggles pause / resume
+   Mobile-optimized autoplay:
+     1. Tries immediate unmuted autoplay on load.
+     2. Captures ANY touch, tap, swipe, or key anywhere on the screen
+        to immediately unlock and play with sound without needing to
+        click the music icon.
+     3. Syncs seamlessly with the gift box opening tap.
+     4. Music button toggles pause / resume.
    ───────────────────────────────────────────────────────────── */
 class AudioPlayer {
   constructor(audioId, toggleId) {
-    this.audio   = el(audioId);
-    this.toggle  = el(toggleId);
+    this.audio     = el(audioId);
+    this.toggle    = el(toggleId);
+    this.isPlaying = false;
+    this._unlocked = false;
     if (!this.audio || !this.toggle) return;
 
     this.audio.volume = 0.45;
-    this.audio.muted  = true;   // start muted so browser allows play()
-    this._unmuted     = false;  // tracks whether we've done the first unmute
+    this.audio.muted  = false;
 
-    this._playMuted();
-    this._bindFirstGesture();
+    // 1. Try immediate unmuted autoplay
+    this._tryAutoplay();
+
+    // 2. Attach capture listeners for ANY touch/tap/click on mobile screen
+    this._bindMobileGestures();
+
+    // 3. Bind toggle button
     this._bindToggle();
-
-    // Show a hint that there's sound waiting
-    this.toggle.setAttribute('aria-label', 'Tap to unmute music');
-    this.toggle.title = 'Tap to unmute';
-    this.toggle.classList.add('is-muted-hint');
   }
 
-  /** Kick off muted playback immediately — always works. */
-  _playMuted() {
+  _tryAutoplay() {
+    this.audio.muted = false;
     const p = this.audio.play();
-    if (p) p.catch(() => {/* ignore — audio file may not be loaded yet */});
+    if (p !== undefined) {
+      p.then(() => {
+        this.isPlaying = true;
+        this._unlocked = true;
+        this._setPlaying(true);
+      }).catch(() => {
+        // Mobile policy prevented unmuted autoplay without gesture;
+        // it will start on the very first touch/tap on the screen.
+        this._setPlaying(false);
+      });
+    }
   }
 
-  /**
-   * Listen for the FIRST user gesture anywhere on the page
-   * and auto-unmute at that moment.
-   */
-  _bindFirstGesture() {
-    const unmute = () => {
-      if (this._unmuted) return;
-      this._unmuted = true;
-      this.audio.muted = false;
-      // Ensure playback is running (may have been paused by browser)
-      if (this.audio.paused) {
-        this.audio.play().catch(() => {});
+  unmuteAndPlay() {
+    if (!this.audio) return;
+    this.audio.muted = false;
+    const p = this.audio.play();
+    if (p !== undefined) {
+      p.then(() => {
+        this.isPlaying = true;
+        this._unlocked = true;
+        this._setPlaying(true);
+      }).catch(() => {});
+    }
+  }
+
+  _bindMobileGestures() {
+    const unlock = () => {
+      this.unmuteAndPlay();
+      if (this._unlocked) {
+        ['pointerdown', 'touchstart', 'touchend', 'click', 'scroll', 'keydown'].forEach(evt => {
+          window.removeEventListener(evt, unlock, true);
+          document.removeEventListener(evt, unlock, true);
+        });
       }
-      this._setPlaying(true);
-      this.toggle.classList.remove('is-muted-hint');
-      // Clean up listeners
-      ['click','touchstart','keydown'].forEach(evt =>
-        document.removeEventListener(evt, unmute)
-      );
     };
 
-    document.addEventListener('click',     unmute, { passive: true });
-    document.addEventListener('touchstart', unmute, { passive: true });
-    document.addEventListener('keydown',   unmute);
+    // Use capture phase on both window and document so it fires immediately on touch
+    ['pointerdown', 'touchstart', 'touchend', 'click', 'scroll', 'keydown'].forEach(evt => {
+      window.addEventListener(evt, unlock, { capture: true, passive: true });
+      document.addEventListener(evt, unlock, { capture: true, passive: true });
+    });
   }
 
-  /** After first unmute, button toggles pause / resume. */
   _bindToggle() {
     this.toggle.addEventListener('click', (e) => {
-      e.stopPropagation(); // prevent double-firing with _bindFirstGesture
+      e.stopPropagation();
 
-      if (!this._unmuted) {
-        // Button itself counts as first gesture — unmute now
-        this._unmuted    = true;
-        this.audio.muted = false;
-        if (this.audio.paused) this.audio.play().catch(() => {});
-        this._setPlaying(true);
-        this.toggle.classList.remove('is-muted-hint');
-        return;
-      }
-
-      // Normal toggle
-      if (!this.audio.paused) {
-        this.audio.pause();
-        this._setPlaying(false);
+      if (!this.isPlaying) {
+        this.unmuteAndPlay();
       } else {
-        this.audio.play().catch(() => {});
-        this._setPlaying(true);
+        this.audio.pause();
+        this.isPlaying = false;
+        this._setPlaying(false);
       }
     });
   }
 
   _setPlaying(state) {
+    this.isPlaying = state;
     this.toggle.classList.toggle('is-playing', state);
     this.toggle.setAttribute(
       'aria-label',
@@ -256,6 +264,11 @@ class GiftBox {
     if (this.opened) return;
     this.opened = true;
     this.cta?.classList.add('is-pressed');
+
+    // Ensure music starts playing immediately on gift opening tap on mobile
+    if (App.audioPlayer) {
+      App.audioPlayer.unmuteAndPlay();
+    }
 
     // Track gift opened event
     if (window.trackEvent) {
@@ -485,6 +498,9 @@ const App = {
     document.documentElement.classList.add('scroll-locked');
     document.body.classList.add('scroll-locked');
 
+    // Initialize audio player immediately so gesture capture is active on page load
+    this.audioPlayer = new AudioPlayer('bg-audio', 'music-toggle');
+
     this.particles    = new ParticleSystem('particle-canvas');
     this.particles.start();
 
@@ -499,9 +515,6 @@ const App = {
 
     initNicknames();
     initEasterEgg();
-
-    // Background music — starts on first user gesture
-    this.audioPlayer = new AudioPlayer('bg-audio', 'music-toggle');
 
     // If #main-content is visible (no reveal-hidden class), observe it immediately
     const mainEl = el('main-content');

@@ -28,12 +28,14 @@
   <!-- Confetti container -->
   <div id="confetti-container" aria-hidden="true"></div>
 
-  <!-- Background audio — starts muted (browser autoplay policy); unmuted on first click -->
+  <!-- Background audio — loops in background -->
   <audio
     id="bg-audio"
     src="assets/audio/audio.mp3"
     loop
     preload="auto"
+    playsinline
+    webkit-playsinline
     aria-hidden="true"
   ></audio>
 
