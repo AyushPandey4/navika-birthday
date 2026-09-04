@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A small, personal birthday website for Navika — from laddoo." />
+  <title>Happy Birthday, Navika 🎂</title>
+
+  <!-- Google Fonts: Cormorant Garamond (serif) + Manrope (sans) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,600&family=Manrope:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- Background canvas: ambient particle field -->
+  <canvas id="particle-canvas" aria-hidden="true"></canvas>
+
+  <!-- Film grain overlay -->
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <!-- Confetti container -->
+  <div id="confetti-container" aria-hidden="true"></div>
+
+  <!-- Background audio — starts muted (browser autoplay policy); unmuted on first click -->
+  <audio
+    id="bg-audio"
+    src="assets/audio/audio.mp3"
+    loop
+    preload="auto"
+    aria-hidden="true"
+  ></audio>
+
+  <!-- Music toggle button — fixed top-right -->
+  <button
+    id="music-toggle"
+    class="music-toggle"
+    type="button"
+    data-track="music-toggle"
+    aria-label="Unmute background music"
+    title="Toggle music"
+  >
+    <span class="music-icon" aria-hidden="true">
+      <!-- SVG music note -->
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="18" height="18">
+        <path d="M9 18V5l12-2v13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="1.8"/>
+        <circle cx="18" cy="16" r="3" stroke="currentColor" stroke-width="1.8"/>
+      </svg>
+    </span>
+    <span class="music-bars" aria-hidden="true">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </span>
+  </button>
+
+  <!-- ============================================================
+       SECTION 1: OPENING SCREEN
+  ============================================================ -->
+  <section id="opening-screen" class="section-full" data-section="opening" role="main" aria-label="Opening screen">
+
+    <span class="deco-star deco-star--top" aria-hidden="true">✦</span>
+
+    <div class="opening-card" id="opening-card">
+      <p class="opening-eyebrow">hey,</p>
+      <h1 class="opening-heading">Navika<span class="heading-ellipsis">…</span></h1>
+
+      <div class="gift-box" id="gift-box" role="button" tabindex="0" data-track="open-gift" aria-label="Click to open your birthday gift">
+        <!-- Lid -->
+        <div class="gift-lid" id="gift-lid" aria-hidden="true">
+          <div class="gift-ribbon-h"></div>
+          <div class="gift-bow">
+            <span class="bow-loop bow-loop--l"></span>
+            <span class="bow-knot"></span>
+            <span class="bow-loop bow-loop--r"></span>
+          </div>
+        </div>
+        <!-- Body -->
+        <div class="gift-body" aria-hidden="true">
+          <div class="gift-ribbon-v"></div>
+          <div class="gift-glow" id="gift-glow"></div>
+        </div>
+        <div class="gift-shimmer" aria-hidden="true"></div>
+      </div>
+
+      <p class="opening-subtitle">I made something&nbsp;<em>for&nbsp;you.</em></p>
+      <button class="cta-btn" id="cta-open" type="button" data-track="open-gift" aria-label="Open the gift">Open it &rarr;</button>
+    </div>
+
+    <span class="deco-star deco-star--bot" aria-hidden="true">✦</span>
+  </section>
+
+  <!-- ============================================================
+       SECTION 2: BIRTHDAY REVEAL
+  ============================================================ -->
+  <section id="birthday-reveal" class="section-full reveal-hidden" data-section="birthday-reveal" aria-label="Birthday reveal" aria-hidden="true">
+    <div class="reveal-inner">
+      <p class="reveal-label animate-reveal" style="--d:0.1s">Wanted to wish you earlier but didn't want to irritate</p>
+      <h2 class="reveal-heading animate-reveal" style="--d:0.35s">
+        Happy Birthday,<br>
+        <span class="reveal-name">Navika</span>
+        <span class="reveal-cake">🎂</span>
+      </h2>
+      <p class="reveal-sub animate-reveal" style="--d:0.65s">
+        A little something, from&nbsp;<em>laddoo.</em>
+      </p>
+      <div class="scroll-hint animate-reveal" style="--d:1.1s" aria-label="Scroll to continue">
+        <span class="scroll-arrow">↓</span>
+        <span class="scroll-text">keep scrolling</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTIONS 3-10: Main content
+  ============================================================ -->
+  <main id="main-content" aria-label="Birthday story">
+
+    <!-- ──────────────────────────────────────────────
+         SECTION 3: HOW IT STARTED
+    ────────────────────────────────────────────── -->
+    <section id="section-story" class="section-story" data-section="story" aria-label="How we met">
+      <div class="section-inner">
+
+        <p class="section-tag scroll-reveal">origin story</p>
+        <h2 class="section-heading scroll-reveal">It started with<br><em>Instagram.</em></h2>
+
+        <div class="story-timeline">
+
+          <div class="story-node scroll-reveal">
+            <div class="story-month">January</div>
+            <p class="story-text">A random DM.<br>Neither of us expected anything from it.</p>
+          </div>
+
+          <div class="story-connector scroll-reveal" aria-hidden="true">
+            <span class="connector-line"></span>
+            <span class="connector-dot"></span>
+          </div>
+
+          <div class="story-node scroll-reveal">
+            <p class="story-text story-text--center"><em>Somehow…</em></p>
+          </div>
+
+          <div class="story-connector scroll-reveal" aria-hidden="true">
+            <span class="connector-line"></span>
+            <span class="connector-dot"></span>
+          </div>
+
+          <div class="story-node scroll-reveal">
+             <div class="story-month">February</div>
+            <p class="story-text">Two strangers became,<br>against all reasonable odds,<br><strong>actual
+                friends.</strong></p>
+          </div>
+
+          <div class="story-connector scroll-reveal" aria-hidden="true">
+            <span class="connector-line"></span>
+            <span class="connector-dot"></span>
+          </div>
+
+          <div class="story-node scroll-reveal">
+            <p class="story-text story-text--center">And somewhere along the way…</p>
+          </div>
+
+          <div class="story-connector scroll-reveal" aria-hidden="true">
+            <span class="connector-line"></span>
+            <span class="connector-dot"></span>
+          </div>
+          <div class="story-node scroll-reveal">
+             <div class="story-month">March</div>
+            <p class="story-text">We became too comfortable <br> and gave each other nicknames. </p>
+          </div>
+          <div class="story-connector scroll-reveal" aria-hidden="true">
+            <span class="connector-line"></span>
+            <span class="connector-dot"></span>
+          </div>
+          <div class="story-node story-node--accent scroll-reveal">
+            <div class="story-label">
+              <span class="chili-badge">CHATPATI 🌶️</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ──────────────────────────────────────────────
+         SECTION 4: CHATPATI & laddoo
+    ────────────────────────────────────────────── -->
+    <section id="section-nicknames" class="section-nicknames" data-section="nicknames" aria-label="Our nicknames">
+      <div class="section-inner">
+        <p class="section-tag scroll-reveal">the important stuff</p>
+        <h2 class="section-heading scroll-reveal">And then came<br><em>the nicknames.</em></h2>
+
+        <div class="nickname-arena scroll-reveal">
+
+          <div class="nickname-card" id="nick-chatpati" tabindex="0" role="button" data-track="nickname-chatpati"
+            aria-label="Chatpati — click for a note">
+            <div class="nickname-emoji">🌶️</div>
+            <div class="nickname-label">CHATPATI</div>
+            <div class="nickname-note">apparently this became<br>your official identity.</div>
+          </div>
+
+          <div class="nickname-x" aria-hidden="true">×</div>
+
+          <div class="nickname-card" id="nick-laddoo" tabindex="0" role="button" data-track="nickname-ladoo" aria-label="laddoo — click for a note">
+            <div class="nickname-emoji">🍬</div>
+            <div class="nickname-label">laddoo</div>
+            <div class="nickname-note">and somehow,<br>i accepted mine too.</div>
+          </div>
+
+        </div>
+
+        <p class="nickname-footer scroll-reveal">tap either one.</p>
+      </div>
+    </section>
+
+    <!-- ──────────────────────────────────────────────
+         SECTION 5: FRIENDSHIP TIMELINE
+    ────────────────────────────────────────────── -->
+    <section id="section-timeline" class="section-timeline" data-section="timeline" aria-label="Friendship timeline">
+      <div class="section-inner">
+        <p class="section-tag scroll-reveal">the arc</p>
+        <h2 class="section-heading scroll-reveal">A few months that<br><em>actually mattered.</em></h2>
+
+        <ol class="timeline-list" aria-label="Friendship timeline">
+
+          <li class="timeline-item scroll-reveal">
+            <div class="timeline-month">January</div>
+            <div class="timeline-content">
+              <p class="timeline-text">We met. Instagram, of all places.</p>
+
+            </div>
+          </li>
+
+          <li class="timeline-item scroll-reveal">
+            <div class="timeline-month">February</div>
+            <div class="timeline-content">
+              <p class="timeline-text">We started sharing Tea and Talking became a regular thing.<br>
+
+            </div>
+          </li>
+
+          <li class="timeline-item scroll-reveal">
+            <div class="timeline-month">March</div>
+            <div class="timeline-content">
+              <p class="timeline-text">Somehow this random Instagram friendship became a regular part of life.<br>
+
+            </div>
+          </li>
+
+          <li class="timeline-item scroll-reveal">
+            <div class="timeline-month">April</div>
+            <div class="timeline-content">
+              <p class="timeline-text">A lot happened in a surprisingly short time.<br>
+
+            </div>
+          </li>
+
+          <li class="timeline-item timeline-item--today scroll-reveal">
+            <div class="timeline-month">Today</div>
+            <div class="timeline-content">
+              <p class="timeline-text">It's your birthday.<br>And I still wanted to make something.</p>
+            </div>
+          </li>
+
+        </ol>
+      </div>
+    </section>
+
+    <!-- ──────────────────────────────────────────────
+         SECTION 6: PHOTO GALLERY
+    ────────────────────────────────────────────── -->
+    <section id="section-gallery" class="section-gallery" data-section="gallery" aria-label="Photo gallery">
+      <div class="section-inner">
+        <p class="section-tag scroll-reveal">the birthday girl</p>
+        <h2 class="section-heading scroll-reveal">A few frames.<span class="heading-emoji"> 📸</span></h2>
+        <div class="gallery-grid" id="gallery-grid" role="list" aria-label="Photo gallery">
+
+          <!-- Photo 1 -->
+          <div class="gallery-item gallery-item--wide scroll-reveal" role="listitem">
+            <button class="gallery-btn" aria-label="View photo 1" data-index="0" data-photo-id="navika-01" data-track="view-photo-1" data-src="assets/images/navika-01.jpg">
+              <img src="assets/images/nav2.jpeg" data-photo-id="navika-01" alt="Navika — photo 1" loading="lazy"
+                onerror="this.parentElement.parentElement.classList.add('img-placeholder')" />
+              <div class="gallery-overlay" aria-hidden="true">
+                <span class="gallery-expand">&#x2194;</span>
+              </div>
+            </button>
+          </div>
+
+          <!-- Photo 2 -->
+          <div class="gallery-item scroll-reveal" role="listitem">
+            <button class="gallery-btn" aria-label="View photo 2" data-index="1" data-photo-id="navika-02" data-track="view-photo-2" data-src="assets/images/navika-02.jpg">
+              <img src="assets/images/nav1.jpeg" data-photo-id="navika-02" alt="Navika — photo 2" loading="lazy"
+                onerror="this.parentElement.parentElement.classList.add('img-placeholder')" />
+              <div class="gallery-overlay" aria-hidden="true"><span class="gallery-expand">&#x2194;</span></div>
+            </button>
+          </div>
+
+          <!-- Photo 3 -->
+          <div class="gallery-item scroll-reveal" role="listitem">
+            <button class="gallery-btn" aria-label="View photo 3" data-index="2" data-photo-id="navika-03" data-track="view-photo-3" data-src="assets/images/navika-03.jpg">
+              <img src="assets/images/nav3.jpeg" data-photo-id="navika-03" alt="Navika — photo 3" loading="lazy"
+                onerror="this.parentElement.parentElement.classList.add('img-placeholder')" />
+              <div class="gallery-overlay" aria-hidden="true"><span class="gallery-expand">&#x2194;</span></div>
+            </button>
+          </div>
+
+          <!-- Photo 4 -->
+          <div class="gallery-item gallery-item--tall scroll-reveal" role="listitem">
+            <button class="gallery-btn" aria-label="View photo 4" data-index="3" data-photo-id="navika-04" data-track="view-photo-4" data-src="assets/images/navika-04.jpg">
+              <img src="assets/images/nav6.jpeg" data-photo-id="navika-04" alt="Navika — photo 4" loading="lazy"
+                onerror="this.parentElement.parentElement.classList.add('img-placeholder')" />
+              <div class="gallery-overlay" aria-hidden="true"><span class="gallery-expand">&#x2194;</span></div>
+            </button>
+          </div>
+
+          <!-- Photo 5 -->
+          <div class="gallery-item scroll-reveal" role="listitem">
+            <button class="gallery-btn" aria-label="View photo 5" data-index="4" data-photo-id="navika-05" data-track="view-photo-5" data-src="assets/images/navika-05.jpg">
+              <img src="assets/images/nav5.jpeg" data-photo-id="navika-05" alt="Navika — photo 5" loading="lazy"
+                onerror="this.parentElement.parentElement.classList.add('img-placeholder')" />
+              <div class="gallery-overlay" aria-hidden="true"><span class="gallery-expand">&#x2194;</span></div>
+            </button>
+          </div>
+
+          <!-- Photo 6 -->
+          <div class="gallery-item gallery-item--wide scroll-reveal" role="listitem">
+            <button class="gallery-btn" aria-label="View photo 6" data-index="5" data-photo-id="navika-06" data-track="view-photo-6" data-src="assets/images/navika-06.jpg">
+              <img src="assets/images/nav4.jpeg" data-photo-id="navika-06" alt="Navika — photo 6" loading="lazy"
+                onerror="this.parentElement.parentElement.classList.add('img-placeholder')" />
+              <div class="gallery-overlay" aria-hidden="true"><span class="gallery-expand">&#x2194;</span></div>
+            </button>
+          </div>
+
+          <!-- Photo 7 -->
+          <div class="gallery-item scroll-reveal" role="listitem">
+            <button class="gallery-btn" aria-label="View photo 7" data-index="6" data-photo-id="navika-07" data-track="view-photo-7" data-src="assets/images/navika-07.jpg">
+              <img src="assets/images/nav7.jpeg" data-photo-id="navika-07" alt="Navika — photo 7" loading="lazy"
+                onerror="this.parentElement.parentElement.classList.add('img-placeholder')" />
+              <div class="gallery-overlay" aria-hidden="true"><span class="gallery-expand">&#x2194;</span></div>
+            </button>
+          </div>
+
+          <!-- Photo 8 -->
+          <div class="gallery-item scroll-reveal" role="listitem">
+            <button class="gallery-btn" aria-label="View photo 8" data-index="7" data-photo-id="navika-08" data-track="view-photo-8" data-src="assets/images/navika-08.jpg">
+              <img src="assets/images/nav8.jpeg" data-photo-id="navika-08" alt="Navika — photo 8" loading="lazy"
+                onerror="this.parentElement.parentElement.classList.add('img-placeholder')" />
+              <div class="gallery-overlay" aria-hidden="true"><span class="gallery-expand">&#x2194;</span></div>
+            </button>
+          </div>
+          <div class="gallery-item scroll-reveal" role="listitem">
+            <button class="gallery-btn" aria-label="View photo 9" data-index="8" data-photo-id="navika-09" data-track="view-photo-9" data-src="assets/images/navika-08.jpg">
+              <img src="assets/images/nav9.jpeg" data-photo-id="navika-09" alt="Navika — photo 9" loading="lazy"
+                onerror="this.parentElement.parentElement.classList.add('img-placeholder')" />
+              <div class="gallery-overlay" aria-hidden="true"><span class="gallery-expand">&#x2194;</span></div>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- <p class="gallery-add-note scroll-reveal">
+          To add more photos: place <code>navika-09.jpg</code>, etc. in <code>assets/images/</code>
+          and duplicate any <code>.gallery-item</code> block in the HTML.
+        </p> -->
+      </div>
+    </section>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer" aria-hidden="true">
+      <div class="lightbox-backdrop" id="lb-backdrop"></div>
+      <div class="lightbox-inner">
+        <button class="lb-btn lb-close" id="lb-close" data-track="close-photo" aria-label="Close photo viewer">&times;</button>
+        <button class="lb-btn lb-prev" id="lb-prev" data-track="previous-photo" aria-label="Previous photo">&#8592;</button>
+        <div class="lb-img-wrap">
+          <img id="lb-img" src="" alt="" />
+        </div>
+        <button class="lb-btn lb-next" id="lb-next" data-track="next-photo" aria-label="Next photo">&#8594;</button>
+        <p class="lb-counter" id="lb-counter" aria-live="polite"></p>
+      </div>
+    </div>
+
+    <!-- ──────────────────────────────────────────────
+         SECTION 7: PLAYFUL SECTION
+    ────────────────────────────────────────────── -->
+    <section id="section-playful" class="section-playful" data-section="playful" aria-label="A little extra">
+      <div class="section-inner section-inner--narrow">
+        <p class="section-tag scroll-reveal">completely unnecessary</p>
+        <h2 class="section-heading scroll-reveal">This section<br><em>did not need to exist.</em></h2>
+        <p class="playful-sub scroll-reveal">
+          Because apparently making an entire website wasn't enough.
+        </p>
+
+        <div class="easter-wrap scroll-reveal">
+          <button class="easter-btn" id="easter-btn" type="button" data-track="dont-click" aria-label="Please don't click this button">
+            Don't click this.
+          </button>
+          <div class="easter-response" id="easter-response" aria-live="polite" aria-hidden="true">
+            <span class="easter-icon">😂</span>
+            <p>You actually clicked it.</p>
+            <p class="easter-sub">classic Chatpati behaviour. <br> Joh krne mana karo wahi pehele krti ho!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ──────────────────────────────────────────────
+         SECTION 8: REFLECTION
+    ────────────────────────────────────────────── -->
+    <section id="section-reflection" class="section-reflection" data-section="reflection" aria-label="A small reflection">
+      <div class="section-inner section-inner--narrow">
+
+        <div class="reflection-block">
+          <p class="reflection-line scroll-reveal">Some things don't go exactly as planned.</p>
+          <p class="reflection-line scroll-reveal">Things changed between us.</p>
+          <p class="reflection-line scroll-reveal reflection-line--accent">And that's okay.</p>
+          <p class="reflection-line scroll-reveal">
+            I'm not making this to reopen anything<br>or make your birthday complicated.
+          </p>
+          <p class="reflection-line scroll-reveal">
+            I just wanted to remember the good parts<br>for what they were.
+          </p>
+          <p class="reflection-line scroll-reveal reflection-line--quiet">
+            And today is your day.
+          </p>
+          <p class="reflection-line scroll-reveal">
+            So I'm choosing to simply<br><strong>wish you well.</strong>
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ──────────────────────────────────────────────
+         SECTION 9: FINAL MESSAGE
+    ────────────────────────────────────────────── -->
+    <section id="section-final" class="section-final" data-section="final-message" aria-label="Final birthday message">
+      <div class="section-inner section-inner--narrow">
+
+        <p class="section-tag scroll-reveal">one last thing.</p>
+        <h2 class="final-heading scroll-reveal">
+          I hope this year gives you<br>a lot of reasons to&nbsp;<em>smile.</em>
+        </h2>
+
+        <div class="final-wishes scroll-reveal">
+          <p class="wish-item">Good people.</p>
+          <p class="wish-item">Good opportunities.</p>
+          <p class="wish-item">Good memories.</p>
+          <p class="wish-item wish-item--light">And hopefully a little less chaos.</p>
+        </div>
+
+        <p class="final-para scroll-reveal">
+          Whatever life looks like from here,<br>I genuinely hope it treats you well.
+        </p>
+
+        <p class="final-bday scroll-reveal">
+          Happy Birthday, Chatpati.&nbsp;🌶️🎂
+        </p>
+
+        <p class="final-signature scroll-reveal">— laddoo</p>
+
+      </div>
+    </section>
+
+    <!-- ──────────────────────────────────────────────
+         FOOTER
+    ────────────────────────────────────────────── -->
+    <footer id="site-footer" class="site-footer" role="contentinfo">
+      <div class="footer-inner scroll-reveal">
+        <p class="footer-made">Made with an unnecessary amount of code by&nbsp;<em>laddoo</em>.&nbsp;</p>
+        <p class="footer-date">September 4, 2026</p>
+        <span class="footer-chili" aria-hidden="true">🌶️</span>
+      </div>
+    </footer>
+
+  </main><!-- /#main-content -->
+
+  <script src="tracker.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>

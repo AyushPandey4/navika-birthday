@@ -1,0 +1,17 @@
+{
+  "name": "chatpati-backend-next",
+  "version": "1.0.0",
+  "description": "Next.js analytics backend and admin dashboard for Navika's birthday site",
+  "scripts": {
+    "dev": "next dev -p 5000",
+    "build": "next build",
+    "start": "next start -p 5000"
+  },
+  "dependencies": {
+    "jose": "^5.6.3",
+    "mongoose": "^8.5.2",
+    "next": "^14.2.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}
