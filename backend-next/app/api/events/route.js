@@ -20,7 +20,17 @@ export async function OPTIONS() {
 
 export async function POST(req) {
   try {
-    await connectDB();
+    const conn = await connectDB();
+    if (!conn) {
+      console.error('[POST /api/events] Database connection returned null. Check MONGODB_URI on Vercel.');
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Database connection failed. Ensure MONGODB_URI is set in Vercel Environment Variables and Atlas allows 0.0.0.0/0 Network Access.'
+        },
+        { status: 503, headers: corsHeaders() }
+      );
+    }
 
     const body = await req.json();
     const { eventType, sessionId, recipientToken, metadata = {}, timestamp } = body;
