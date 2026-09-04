@@ -12,7 +12,7 @@
   // Example: 'https://navika-birthday.vercel.app'
   // Or leave as '' if frontend and backend are hosted on the same domain.
   // =========================================================================
-  const VERCEL_BACKEND_URL = '';
+  const VERCEL_BACKEND_URL = 'https://nav-backend-next.vercel.app';
 
   // Storage keys
   const KEY_SESSION = 'chatpati_sess_id';
